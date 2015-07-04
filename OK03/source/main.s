@@ -1,30 +1,50 @@
 .section .init
 .globl _start
 _start:
+b main
 
-ldr r0,=0x20200000  ;@GPIO controller address
-mov r1,#1
-lsl r1,#18          ;@Pin 16 is sixth bit-triplet in the GPIO 10-19 block -- 6x3=18
-str r1,[r0,#4]      ;@Load r1 into GPIO controller DWORD 2
-mov r1,#1
-lsl r1,#16          
+.section .text
+main:
+mov sp, #0x8000
+
+pinNum .req r0
+pinFunc .req r1
+mov pinNum, #16
+mov pinFunc, #1
+bl SetGpioFunction
+.unreq pinNum
+.unreq pinFunc
 
 loop$:		    ;@Loop on turning the ACT led on and off
-str r1,[r0,#40]     ;@GPIO Pin Off address (GPIO+28 is on)
+pinNum .req r0
+pinVal .req r1
+mov pinNum, #16
+mov pinVal, #0
+bl SetGpio
+.unreq pinNum
+.unreq pinVal
 
-mov r2, #0x3F0000   ;@Wait before next step
-wait1$:
-sub r2, #1
-cmp r2, #0
-bne wait1$
+bl sleep$
 
-str r1,[r0,#28]     ;@GPIO Pin on address
+pinNum .req r0
+pinVal .req r1
+mov pinNum, #16
+mov pinVal, #1
+bl SetGpio
+.unreq pinNum
+.unreq pinVal
 
-mov r2, #0x3F0000
-wait2$:
-sub r2, #1
-cmp r2, #0
-bne wait2$
-
+bl sleep$
 
 b loop$
+
+sleep$:
+push {lr}
+timer .req r2
+mov timer, #0x3F0000
+wait$:
+sub timer, #1
+cmp timer, #0
+bne wait$
+.unreq timer
+pop {pc}
