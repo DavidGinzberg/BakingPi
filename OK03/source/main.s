@@ -36,6 +36,10 @@ bl SetGpio
 
 bl sleep$
 bl sleep$
+bl sleep$
+bl sleep$
+bl sleep$
+bl sleep$
 
 b loop$
 
@@ -43,6 +47,7 @@ sleep$:
 push {lr}
 timer .req r2
 mov timer, #0x3F0000
+lsr timer, #1
 wait$:
 sub timer, #1
 cmp timer, #0
