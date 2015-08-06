@@ -3,6 +3,12 @@ getSystemTimerAddress:
 ldr r0, =0x20003000
 mov pc, lr
 
+.globl systemWaitMilli
+systemWaitMilli:
+lsl r0, #10   ;@ Multiply milliseconds by ~1k to get approximate microseconds
+;@ WARNING this timer is off by 1.44 seconds every minute
+b systemWait
+
 ;@bonus: catch the call to systemWait, test the wait time, and call shortWait
 ;@  or longWait depending on whether there is enough time to set a comparison
 ;@  register on the system timer (getSystemTimerAddress + 12, 16, or 20)
