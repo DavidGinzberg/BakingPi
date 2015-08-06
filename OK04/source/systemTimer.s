@@ -30,10 +30,10 @@ goalTime .req r3
 ;@ Add r0 and waitTime to get 4-byte goalTime
 add goalTime, waitTime, r0
 
-waitLoop:     ;@ Keep fetching and comparing clock until it's bigger
+waitLoop$:     ;@ Keep fetching and comparing clock until it's bigger
 ldrd r0, r1, [r2, #4]
 cmp goalTime, r0
-bhi waitLoop
+bhi waitLoop$
 
 .unreq goalTime
 .unreq waitTime
