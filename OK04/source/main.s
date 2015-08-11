@@ -25,7 +25,7 @@ bl SetGpio
 .unreq pinVal
 
 @; bl sleep$
-mov r0, 0x800 ;@ Wait approx 2 seconds
+mov r0, #0x800 ;@ Wait approx 2 seconds
 bl systemWaitMilli
 
 pinNum .req r0
@@ -38,7 +38,7 @@ bl SetGpio
 
 ;@ bl sleep$
 ;@ bl sleep$
-mov r0, 0x1000  ;@ approx 4 seconds
+mov r0, #0x1000  ;@ approx 4 seconds
 bl systemWaitMilli
 
 b loop$
