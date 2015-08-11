@@ -15,6 +15,13 @@ bl SetGpioFunction
 .unreq pinNum
 .unreq pinFunc
 
+ptrn .req r4
+ldr ptrn, =pattern
+ldr ptrn, [ptrn]
+seq .req r5
+mov seq, #0
+
+;@TODO: rewrite code to use seq to implement pattern with 250ms waits
 loop$:		    ;@Loop on turning the ACT led on and off
 pinNum .req r0
 pinVal .req r1
@@ -53,3 +60,8 @@ cmp timer, #0
 bne wait$
 .unreq timer
 pop {pc}
+
+.section .data
+.align 2
+pattern
+.int 0b11111111101010100010001000101010
