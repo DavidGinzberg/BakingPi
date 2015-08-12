@@ -22,46 +22,30 @@ seq .req r5
 mov seq, #0
 
 ;@TODO: rewrite code to use seq to implement pattern with 250ms waits
-loop$:		    ;@Loop on turning the ACT led on and off
-pinNum .req r0
-pinVal .req r1
-mov pinNum, #16
-mov pinVal, #0
-bl SetGpio
-.unreq pinNum
-.unreq pinVal
-
-@; bl sleep$
-mov r0, #0x800 ;@ Wait approx 2 seconds
-bl systemWaitMilli
-
+loop$:		    ;@Loop on the given pattern
 pinNum .req r0
 pinVal .req r1
 mov pinNum, #16
 mov pinVal, #1
+lsl r1, seq
+and r1,ptrn
 bl SetGpio
 .unreq pinNum
 .unreq pinVal
 
-;@ bl sleep$
-;@ bl sleep$
-mov r0, #0x1000  ;@ approx 4 seconds
+mov r0, #0xFA ;@ Wait approx .25 seconds
 bl systemWaitMilli
-
+;@ need to increment seq and reset if gt 32
+add seq, #1	;@increment seq
+cmp seq, #32
+subeq seq, #32	;@reset to zero if 32
 b loop$
 
-sleep$:
-push {lr}
-timer .req r2
-mov timer, #0x3F0000
-wait$:
-sub timer, #1
-cmp timer, #0
-bne wait$
-.unreq timer
-pop {pc}
+;@Technically dead code, but unreq for sanity's sake
+.unreq seq
+.unreq ptrn
 
 .section .data
 .align 2
-pattern
+pattern:
 .int 0b11111111101010100010001000101010
